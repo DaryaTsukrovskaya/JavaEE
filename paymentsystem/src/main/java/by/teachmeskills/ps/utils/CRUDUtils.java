@@ -83,17 +83,14 @@ public class CRUDUtils {
 
         try (Connection connection = DbUtils.getConnection(); PreparedStatement statement = connection.prepareStatement(GET_BANK_ACCOUNT_BY_ID_QUERY)) {
             statement.setString(1, id);
-            String returnedId;
-            String merchantId;
-            AccountStatus status;
-            String accNumber;
-            LocalDateTime createdAt;
-            for (ResultSet set = statement.executeQuery(); set.next(); bankAccount = new BankAccount(returnedId, merchantId, status, accNumber, createdAt)) {
-                returnedId = set.getString("id");
-                merchantId = set.getString("merchant_id");
-                status = ConverterUtils.toAccountStatus(set.getString("status"));
-                accNumber = EncryptionUtils.decrypt(set.getString("account_number"));
-                createdAt = set.getTimestamp("created_at").toLocalDateTime();
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                String returnedId = set.getString("id");
+                String merchantId = set.getString("merchant_id");
+                AccountStatus status = ConverterUtils.toAccountStatus(set.getString("status"));
+                String accNumber = EncryptionUtils.decrypt(set.getString("account_number"));
+                LocalDateTime createdAt = set.getTimestamp("created_at").toLocalDateTime();
+                bankAccount = new BankAccount(returnedId, merchantId, status, accNumber, createdAt);
             }
 
         } catch (SQLException e) {
@@ -142,13 +139,12 @@ public class CRUDUtils {
         Merchant merchant = null;
         try (Connection connection = DbUtils.getConnection(); PreparedStatement statement = connection.prepareStatement(GET_MERCHANT_BY_ID_QUERY)) {
             statement.setString(1, id);
-            String returnedId;
-            String name;
-            LocalDateTime localDateTime;
-            for (ResultSet set = statement.executeQuery(); set.next(); merchant = new Merchant(returnedId, name, localDateTime)) {
-                returnedId = set.getString("id");
-                name = set.getString("name");
-                localDateTime = set.getTimestamp("created_at").toLocalDateTime();
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                String returnedId = set.getString("id");
+                String name = set.getString("name");
+                LocalDateTime localDateTime = set.getTimestamp("created_at").toLocalDateTime();
+                merchant = new Merchant(returnedId, name, localDateTime);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
