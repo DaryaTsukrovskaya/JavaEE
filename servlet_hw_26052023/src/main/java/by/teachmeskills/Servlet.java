@@ -28,11 +28,11 @@ public class Servlet extends HttpServlet {
         resp.setContentType("text/html");
         String name = req.getParameter("name");
         String password = req.getParameter("password");
-        ServletContext servletContext = getServletContext();
-        DBConnectionManager dbConnectionManager = (DBConnectionManager) servletContext.getAttribute("DBManager");
-        Connection connection = dbConnectionManager.getConnection();
-        User user = null;
         try {
+            ServletContext servletContext = getServletContext();
+            DBConnectionManager dbConnectionManager = (DBConnectionManager) servletContext.getAttribute("DBManager");
+            Connection connection = dbConnectionManager.getConnection();
+            User user = null;
             PreparedStatement getUserStatement = connection.prepareStatement("SELECT * FROM users WHERE name=?");
             getUserStatement.setString(1, name);
             ResultSet set = getUserStatement.executeQuery();

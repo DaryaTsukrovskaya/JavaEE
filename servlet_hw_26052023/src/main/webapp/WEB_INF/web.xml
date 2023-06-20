@@ -15,7 +15,7 @@
     </context-param>
     <context-param>
         <param-name>dburl</param-name>
-        <param-value>"jdbc:mysql://localhost:3306/users_db"</param-value>
+        <param-value>jdbc:mysql://localhost:3306/users_db</param-value>
     </context-param>
     <filter>
         <filter-name>encoding-filter</filter-name>

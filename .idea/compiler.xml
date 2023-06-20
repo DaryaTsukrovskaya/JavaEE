@@ -13,5 +13,8 @@
         <module name="paymentsystem" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hw02062023" target="18" />
+    </bytecodeTargetLevel>
   </component>
 </project>
