@@ -11,9 +11,6 @@
     <title>Добро пожаловать на домашнюю страницу!</title>
 </head>
 <body>
-<% User user = (User) session.getAttribute("user");%>
-<c:if test="${user == null}">
-    <jsp:forward page="/login"/>
-</c:if>
+<a>Добро пожаловать на домашнюю страницу!</a>
 </body>
 </html>

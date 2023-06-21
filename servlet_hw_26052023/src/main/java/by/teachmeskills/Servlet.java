@@ -14,13 +14,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
-@WebServlet("/login")
+@WebServlet("/home")
 public class Servlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.jsp");
-        requestDispatcher.forward(req, resp);
+        if (((User) req.getSession().getAttribute("user")).getName().equals("isEmpty")) {
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher("/login.jsp");
+            requestDispatcher.forward(req, resp);
+        } else {
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher("/home.jsp");
+            requestDispatcher.forward(req, resp);
+        }
     }
 
     @Override
@@ -28,33 +34,41 @@ public class Servlet extends HttpServlet {
         resp.setContentType("text/html");
         String name = req.getParameter("name");
         String password = req.getParameter("password");
-        try {
-            ServletContext servletContext = getServletContext();
-            DBConnectionManager dbConnectionManager = (DBConnectionManager) servletContext.getAttribute("DBManager");
-            Connection connection = dbConnectionManager.getConnection();
-            User user = null;
-            PreparedStatement getUserStatement = connection.prepareStatement("SELECT * FROM users WHERE name=?");
-            getUserStatement.setString(1, name);
-            ResultSet set = getUserStatement.executeQuery();
-            while (set.next()) {
-                user = new User(set.getString(1), set.getString(2));
+        if (Optional.ofNullable(name).isPresent() && Optional.ofNullable(name).isPresent()) {
+            try {
+                ServletContext servletContext = getServletContext();
+                DBConnectionManager dbConnectionManager = (DBConnectionManager) servletContext.getAttribute("DBManager");
+                Connection connection = dbConnectionManager.getConnection();
+                User user = null;
+                PreparedStatement getUserStatement = connection.prepareStatement("SELECT * FROM users WHERE name=?");
+                getUserStatement.setString(1, name);
+                ResultSet set = getUserStatement.executeQuery();
+                while (set.next()) {
+                    user = new User(set.getString(1), set.getString(2));
+                }
+                if (user != null && user.getPassword().equals(password)) {
+                    req.getSession().setAttribute("user", user);
+                    RequestDispatcher requestDispatcher = req.getRequestDispatcher("home.jsp");
+                    requestDispatcher.forward(req, resp);
+                } else if (user == null) {
+                    PreparedStatement createUserStatement = connection.prepareStatement("INSERT INTO users(name,password) VALUES(?,?)");
+                    createUserStatement.setString(1, name);
+                    createUserStatement.setString(2, password);
+                    createUserStatement.execute();
+                    user = new User(name, password);
+                    req.getSession().setAttribute("user", user);
+                    RequestDispatcher requestDispatcher = req.getRequestDispatcher("home.jsp");
+                    requestDispatcher.forward(req, resp);
+                } else {
+                    RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.jsp");
+                    requestDispatcher.forward(req, resp);
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
-            if (user != null && user.getPassword().equals(password)) {
-                req.getSession().setAttribute("user", user);
-            } else if (user == null) {
-                PreparedStatement createUserStatement = connection.prepareStatement("INSERT INTO users(name,password) VALUES(?,?)");
-                createUserStatement.setString(1, name);
-                createUserStatement.setString(2, password);
-                createUserStatement.execute();
-                user = new User(name, password);
-                req.getSession().setAttribute("user", user);
-            }
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher("home.jsp");
+        } else {
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.jsp");
             requestDispatcher.forward(req, resp);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-
-
     }
 }
