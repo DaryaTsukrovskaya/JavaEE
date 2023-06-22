@@ -2,14 +2,19 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="client" />
-        <module name="paymentsystem" />
         <module name="servlet_hw" />
+        <module name="servlet_hw_26052023" />
+        <module name="paymentsystem" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hw02062023" target="18" />
+    </bytecodeTargetLevel>
   </component>
 </project>
