@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>${categoryName}</title>
+    <title>${productName}</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -15,7 +15,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand">${categoryName}</a>
+            <a class="navbar-brand">${productName}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -39,24 +39,25 @@
 </header>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="product" value="${product}"/>
 <div class="row">
-    <c:forEach items="${categoryProducts}" var="product">
-        <div class="col d-flex justify-content-center">
-            <a href="product?id=${product.getId()}" style="text-decoration:none;color:inherit">
-                <div class="card" style="width: 14rem; margin: 20px">
-                    <img class="card-img-top"
-                         src="${contextPath}/images/${product.getImageName()}" alt="Card image">
-                    <div class="card-body" style="text-align: center">
-                        <h5 class="card-title"> ${product.getName()}</h5>
-                        <p class="card-text">${product.getDescription()}</p>
-                        <p class="card-text">Цена: <fmt:formatNumber value="${product.getPrice()}"
-                                                                     type="currency"/><br>
-                    </div>
+    <div class="col d-flex justify-content-center">
+        <div class="container text-center">
+            <div class="row row-cols-4">
+                <div class="col">
+                    <img src="${contextPath}/images/${product.getImageName()}" class="img-thumbnail" alt="Card image">
                 </div>
-            </a>
+                <div class="col">${product.getName()}</div>
+                <div class="col-6">${product.getDescription()}</div>
+                <div class="col">Цена: <fmt:formatNumber value="${product.getPrice()}"
+                                                         type="currency"/></div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="#" class="btn btn-primary" type="button">Купить</a>
+                    </a>
+                </div>
+            </div>
         </div>
-    </c:forEach>
+    </div>
 </div>
-
 </body>
 </html>
