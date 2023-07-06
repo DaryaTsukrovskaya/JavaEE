@@ -1,6 +1,7 @@
 package by.teachmeskills.shop;
 
 
+import by.teachmeskills.shop.exceptions.ExecuteQueryException;
 import by.teachmeskills.shop.listener.DBConnectionManager;
 import by.teachmeskills.shop.model.Category;
 import by.teachmeskills.shop.model.User;
@@ -38,7 +39,12 @@ public class AppServlet extends HttpServlet {
             ServletContext servletContext = getServletContext();
             DBConnectionManager dbConnectionManager = (DBConnectionManager) servletContext.getAttribute("DBManager");
             Connection connection = dbConnectionManager.getConnection();
-            User user = CRUDUtils.getUser(name, connection);
+            User user = null;
+            try {
+                user = CRUDUtils.getUser(name, connection);
+            } catch (ExecuteQueryException e) {
+                System.out.println(e.getMessage());
+            }
             if (user != null && user.getPassword().equals(password)) {
                 req.getSession().setAttribute("user", user);
             } else if (user == null) {
@@ -49,7 +55,11 @@ public class AppServlet extends HttpServlet {
                 RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.jsp");
                 requestDispatcher.forward(req, resp);
             }
-            req.setAttribute("categories", CRUDUtils.getCategories(connection));
+            try {
+                req.setAttribute("categories", CRUDUtils.getCategories(connection));
+            } catch (ExecuteQueryException e) {
+                System.out.println(e.getMessage());
+            }
             RequestDispatcher requestDispatcher = req.getRequestDispatcher("home.jsp");
             requestDispatcher.forward(req, resp);
         } else {

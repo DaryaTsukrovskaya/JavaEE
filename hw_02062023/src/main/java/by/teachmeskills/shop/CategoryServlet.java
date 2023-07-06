@@ -1,6 +1,7 @@
 package by.teachmeskills.shop;
 
 
+import by.teachmeskills.shop.exceptions.ExecuteQueryException;
 import by.teachmeskills.shop.listener.DBConnectionManager;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -22,7 +23,11 @@ public class CategoryServlet extends HttpServlet {
         ServletContext servletContext = getServletContext();
         DBConnectionManager dbConnectionManager = (DBConnectionManager) servletContext.getAttribute("DBManager");
         Connection connection = dbConnectionManager.getConnection();
-        req.setAttribute("categoryProducts", CRUDUtils.getCategoryProducts(req.getParameter("name"),connection));
+        try {
+            req.setAttribute("categoryProducts", CRUDUtils.getCategoryProducts(req.getParameter("name"), connection));
+        } catch (ExecuteQueryException e) {
+            System.out.println(e.getMessage());
+        }
         requestDispatcher.forward(req, resp);
     }
 }

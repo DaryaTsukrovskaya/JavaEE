@@ -1,5 +1,6 @@
 package by.teachmeskills.shop;
 
+import by.teachmeskills.shop.exceptions.ExecuteQueryException;
 import by.teachmeskills.shop.model.Category;
 import by.teachmeskills.shop.model.Product;
 import by.teachmeskills.shop.model.User;
@@ -34,7 +35,7 @@ public class CRUDUtils {
         }
     }
 
-    public static User getUser(String name, Connection connection) {
+    public static User getUser(String name, Connection connection) throws ExecuteQueryException {
         try (PreparedStatement statement = connection.prepareStatement(GET_USER_QUERY)) {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
@@ -42,11 +43,11 @@ public class CRUDUtils {
             User user = new User(resultSet.getString("login"), resultSet.getString("password"));
             return user;
         } catch (SQLException e) {
-            return null;
+          throw new ExecuteQueryException("User not found!");
         }
     }
 
-    public static List<Category> getCategories(Connection connection) {
+    public static List<Category> getCategories(Connection connection) throws ExecuteQueryException {
         List<Category> categories = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(GET_CATEGORIES_QUERY)) {
             ResultSet resultSet = statement.executeQuery();
@@ -55,12 +56,12 @@ public class CRUDUtils {
             }
             return categories;
         } catch (SQLException e) {
-            return null;
+            throw new ExecuteQueryException("Categories are not found!");
         }
 
     }
 
-    public static List<Product> getCategoryProducts(String categoryName, Connection connection) {
+    public static List<Product> getCategoryProducts(String categoryName, Connection connection) throws ExecuteQueryException {
         List<Product> categoryProducts = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(GET_CATEGORY_PRODUCTS_QUERY)) {
             preparedStatement.setString(1, categoryName);
@@ -72,7 +73,7 @@ public class CRUDUtils {
             }
             return categoryProducts;
         } catch (SQLException e) {
-            return null;
+            throw new ExecuteQueryException("Category products are not found!");
         }
     }
 
