@@ -40,21 +40,23 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="product" value="${product}"/>
-<div class="row">
-    <div class="col d-flex justify-content-center">
-        <div class="container text-center">
-            <div class="row row-cols-4">
-                <div class="col">
-                    <img src="${contextPath}/images/${product.getImageName()}" class="img-thumbnail" alt="Card image">
-                </div>
-                <div class="col">${product.getName()}</div>
-                <div class="col-6">${product.getDescription()}</div>
-                <div class="col">Цена: <fmt:formatNumber value="${product.getPrice()}"
-                                                         type="currency"/></div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="#" class="btn btn-primary" type="button">Купить</a>
-                    </a>
-                </div>
+<div class="container-fluid">
+    <div class="row g-0">
+        <div class="col-md-3">
+            <img src="${contextPath}/images/${product.getImageName()}" class="img-fluid rounded-start"
+                 alt="Card image">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h3 class="card-title">${product.getName()}</h3><br>
+                <p class="card-text">${product.getDescription()}</p><br>
+                <h4 class="card-text"><small class="text-body-secondary">
+                    Цена: <fmt:formatNumber value="${product.getPrice()}"
+                                            type="currency"/>
+                </small></h4>
+                <br>
+                <br>
+                <button type="button" class="btn btn-dark btn-lg">Купить</button>
             </div>
         </div>
     </div>
